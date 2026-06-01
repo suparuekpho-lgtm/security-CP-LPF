@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>CodePen - A Pen by ศุภฤกษ์ เพิ่มธนสาร</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>ระบบตรวจจุด รปภ.</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.5.0/tabler-icons.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f5f5f5; --bg3:#f3f4f6;
+  --bdr1:#e5e7eb; --bdr2:#d1d5db;
+  --txt:#111827; --txt2:#6b7280;
+  --rnd-lg:12px; --rnd-md:8px; --rnd-sm:6px;
+  --day:#0C447C; --day-lt:#E6F1FB; --day-h:#185FA5;
+  --ngt:#26215C; --ngt-lt:#CECBF6; --ngt-h:#3C3489;
+  --grn:#1D9E75; --grn-lt:#EAF3DE; --grn-dk:#27500A; --grn-bdr:#C0DD97;
+  --red:#E24B4A; --red-lt:#FCEBEB; --red-dk:#791F1F;
+  --org:#BA7517; --org-dk:#633806;
+  --adm:#7C3AED; --adm-lt:#EDE9FE; --adm-bdr:#C4B5FD;
+  --fnt:-apple-system,BlinkMacSystemFont,'Segoe UI',Sarabun,sans-serif;
+  --mono:'Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fnt);background:var(--bg3);color:var(--txt);min-height:100vh}
+.app{max-width:480px;margin:0 auto;padding:1rem}
+
+/* SCREENS */
+.screen{display:none}.screen.active{display:block}
+
+/* CARDS */
+.card{background:var(--bg);border:0.5px solid var(--bdr1);border-radius:var(--rnd-lg);padding:1rem 1.25rem;margin-bottom:12px}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:10px;border-radius:var(--rnd-lg);padding:.75rem 1.25rem;margin-bottom:1rem}
+.topbar-day{background:var(--day);color:var(--day-lt)}
+.topbar-night{background:var(--ngt);color:var(--ngt-lt)}
+.topbar-admin{background:var(--adm);color:#EDE9FE}
+.back-btn{background:rgba(255,255,255,.18);border:none;border-radius:var(--rnd-md);padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:4px;font-size:13px;color:inherit;flex-shrink:0;transition:background .15s}
+.back-btn:hover{background:rgba(255,255,255,.3)}
+.topbar-title{flex:1;min-width:0}
+.topbar-title h1{font-size:16px;font-weight:600}
+.topbar-title p{font-size:11px;opacity:.85;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:3px 10px;border-radius:var(--rnd-md);font-weight:500}
+.badge-green{background:var(--grn-lt);color:var(--grn-dk)}
+.badge-red{background:var(--red-lt);color:var(--red-dk)}
+.badge-org{background:#FEF3C7;color:#92400E}
+.badge-blue{background:var(--day-lt);color:var(--day)}
+.badge-adm{background:var(--adm-lt);color:var(--adm)}
+
+/* BUTTONS */
+.btn{width:100%;padding:10px;border-radius:var(--rnd-md);border:0.5px solid var(--bdr2);background:var(--bg);color:var(--txt);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,opacity .15s;font-family:var(--fnt)}
+.btn:hover{background:var(--bg2)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-day{background:var(--day);color:var(--day-lt);border-color:var(--day)}.btn-day:hover{background:var(--day-h)}
+.btn-night{background:var(--ngt);color:var(--ngt-lt);border-color:var(--ngt)}.btn-night:hover{background:var(--ngt-h)}
+.btn-grn{background:var(--grn-lt);color:var(--grn-dk);border-color:var(--grn-bdr)}.btn-grn:hover{background:var(--grn-bdr)}
+.btn-send{background:var(--grn);color:#fff;border-color:var(--grn)}.btn-send:hover{background:#17876A}
+.btn-excel{background:#166534;color:#fff;border-color:#166534}.btn-excel:hover{background:#14532D}
+.btn-adm{background:var(--adm);color:#fff;border-color:var(--adm)}.btn-adm:hover{background:#6D28D9}
+.btn-copy{background:#0C447C;color:#E6F1FB;border-color:#0C447C}.btn-copy:hover{background:#185FA5}
+.btn-copy-line{background:#06C755;color:#fff;border-color:#06C755}.btn-copy-line:hover{background:#05B04C}
+.btn-sm{width:auto;padding:7px 14px;font-size:13px}
+.btn-xs{width:auto;padding:5px 10px;font-size:12px}
+.btn-check{background:var(--grn-lt);color:var(--grn-dk);border-color:var(--grn-bdr);white-space:nowrap}.btn-check:hover{background:var(--grn-bdr)}
+.btn-danger{background:var(--red-lt);color:var(--red-dk);border-color:#FCA5A5}.btn-danger:hover{background:#FCA5A5}
+.btn-row{display:flex;gap:8px;margin-bottom:8px}.btn-row .btn{flex:1}
+
+/* INPUTS */
+.input{width:100%;padding:9px 12px;border-radius:var(--rnd-md);border:0.5px solid var(--bdr2);background:var(--bg);color:var(--txt);font-size:15px;font-family:var(--fnt)}
+.input:focus{outline:none;border-color:#378ADD}
+.label{font-size:13px;color:var(--txt2);margin-bottom:6px;display:block}
+.form-group{margin-bottom:14px}
+.textarea{width:100%;padding:7px 10px;border-radius:var(--rnd-md);border:0.5px solid var(--bdr2);background:var(--bg2);color:var(--txt);font-size:13px;font-family:var(--fnt);resize:none;margin-top:6px}
+.textarea:focus{outline:none;border-color:#378ADD}
+
+/* SHIFT / ROUND PICKER */
+.shift-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.shift-card{border:2px solid var(--bdr1);border-radius:var(--rnd-lg);padding:1rem;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.shift-card:hover{border-color:var(--bdr2)}
+.shift-card.sel-day{border-color:var(--day);background:var(--day-lt)}
+.shift-card.sel-night{border-color:var(--ngt-h);background:#EEEDFE}
+.shift-card i{font-size:26px;margin-bottom:6px;display:block}
+.sh-name{font-size:15px;font-weight:500}.sh-time{font-size:12px;color:var(--txt2);margin-top:2px}
+.round-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.round-card{border:1.5px solid var(--bdr1);border-radius:var(--rnd-md);padding:.65rem .85rem;cursor:pointer;transition:border-color .15s;display:flex;align-items:center;gap:8px}
+.round-card:hover{border-color:var(--bdr2)}
+.round-card.sel-day{border-color:var(--day);background:var(--day-lt)}
+.round-card.sel-night{border-color:var(--ngt-h);background:#EEEDFE}
+.round-num{font-size:13px;font-weight:500;color:var(--txt2);min-width:18px}
+.round-time{font-size:13px;color:var(--txt)}
+
+/* PROGRESS */
+.progress-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin:6px 0}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s}
+
+/* CHECKPOINT ROW */
+.cp-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:0.5px solid var(--bdr1)}
+.cp-row:last-child{border-bottom:none}
+.cp-num{min-width:24px;height:24px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--txt2);margin-top:1px;flex-shrink:0}
+.cp-num.done{background:var(--grn-lt);color:var(--grn-dk)}
+.cp-info{flex:1;min-width:0}
+.cp-name{font-size:14px;font-weight:500}
+.cp-time{font-size:12px;color:var(--txt2);margin-top:2px}
+.cp-note-txt{font-size:12px;color:var(--org-dk);margin-top:3px;display:flex;align-items:center;gap:4px}
+
+/* PHOTO AREA */
+.photo-area{margin-top:8px;border:1.5px dashed var(--bdr2);border-radius:var(--rnd-md);padding:8px;background:var(--bg2)}
+.photo-btn-row{display:flex;gap:6px;margin-bottom:6px}
+.photo-btn{flex:1;padding:6px 8px;border-radius:var(--rnd-sm);border:0.5px solid var(--bdr2);background:var(--bg);color:var(--txt2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:var(--fnt);transition:background .15s}
+.photo-btn:hover{background:var(--day-lt);color:var(--day);border-color:var(--day)}
+.photo-input{display:none}
+.photo-previews{display:flex;gap:6px;flex-wrap:wrap}
+.photo-thumb-wrap{position:relative;width:64px;height:64px}
+.photo-thumb{width:64px;height:64px;object-fit:cover;border-radius:var(--rnd-sm);border:0.5px solid var(--bdr1);cursor:pointer;display:block}
+.photo-remove{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.photo-count{display:inline-flex;align-items:center;gap:3px;font-size:11px;background:var(--day-lt);color:var(--day);border-radius:4px;padding:2px 7px;margin-top:4px}
+
+/* REPORT ROWS */
+.report-row{padding:10px 0;border-bottom:0.5px solid var(--bdr1);font-size:13px}
+.report-row:last-child{border-bottom:none}
+.report-row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.report-name{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.report-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* PHOTO GRID IN REPORT */
+.rpt-photos{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.rpt-photo{width:70px;height:70px;object-fit:cover;border-radius:var(--rnd-sm);border:0.5px solid var(--bdr1);cursor:pointer}
+
+/* STAT */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1rem}
+.stat-card{background:var(--bg2);border-radius:var(--rnd-md);padding:.75rem .5rem;text-align:center}
+.stat-num{font-size:22px;font-weight:600}.stat-lbl{font-size:11px;color:var(--txt2);margin-top:2px}
+
+/* INFO BAR */
+.info-bar{border-radius:var(--rnd-md);padding:8px 12px;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.info-bar-day{background:var(--day-lt);color:var(--day)}
+.info-bar-night{background:#EEEDFE;color:var(--ngt-h)}
+
+/* FILTER */
+.filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.filter-btn{padding:5px 12px;border-radius:var(--rnd-md);border:0.5px solid var(--bdr2);background:var(--bg);color:var(--txt2);font-size:12px;cursor:pointer;font-family:var(--fnt)}
+.filter-btn.act-day{background:var(--day);color:var(--day-lt);border-color:var(--day)}
+.filter-btn.act-night{background:var(--ngt);color:var(--ngt-lt);border-color:var(--ngt)}
+.filter-btn.act-adm{background:var(--adm);color:#fff;border-color:var(--adm)}
+
+/* DIVIDER */
+.divider{border:none;border-top:0.5px solid var(--bdr1);margin:1rem 0}
+
+/* ADMIN HISTORY */
+.hist-item{padding:10px 12px;border-bottom:0.5px solid var(--bdr1);cursor:pointer;transition:background .15s}
+.hist-item:last-child{border-bottom:none}
+.hist-item:hover{background:var(--bg2)}
+.hist-meta{font-size:12px;color:var(--txt2);margin-top:3px}
+.date-range-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:var(--rnd-md);font-size:13px;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;font-weight:500}
+.toast.show{opacity:1}
+.toast-ok{background:var(--grn-dk);color:var(--grn-lt)}
+.toast-err{background:var(--red-dk);color:#fff}
+.toast-info{background:#1e3a5f;color:#dbeafe}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:999;align-items:center;justify-content:center}
+.lightbox.show{display:flex}
+.lightbox img{max-width:95vw;max-height:85vh;border-radius:8px;object-fit:contain}
+.lb-close{position:absolute;top:14px;right:18px;color:#fff;font-size:30px;cursor:pointer;background:none;border:none;line-height:1}
+
+/* SPINNER */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:_spin .65s linear infinite}
+@keyframes _spin{to{transform:rotate(360deg)}}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--bg);border-radius:var(--rnd-lg);padding:1.5rem;max-width:320px;width:92%;text-align:center}
+.modal h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--txt2);margin-bottom:1rem;line-height:1.5}
+.modal-btns{display:flex;gap:8px;flex-direction:column}
+
+/* role pill */
+.role-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600}
+.role-user{background:#FEF3C7;color:#92400E}
+.role-admin{background:var(--adm-lt);color:var(--adm)}
+
+/* Sending overlay */
+.send-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#fff;font-size:15px}
+.send-overlay.show{display:flex}
+.send-big-spin{width:44px;height:44px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:_spin .75s linear infinite}
+
+/* copy-box */
+.copy-box{background:var(--bg2);border:0.5px solid var(--bdr1);border-radius:var(--rnd-md);padding:12px;font-size:12px;color:var(--txt2);white-space:pre-wrap;line-height:1.7;margin-bottom:12px;font-family:var(--mono);max-height:200px;overflow-y:auto}
+
+/* Settings hint */
+.hint-box{background:#FFF7ED;border:0.5px solid #FDE68A;border-radius:var(--rnd-md);padding:10px 12px;font-size:12px;color:#78350F;margin-bottom:12px;line-height:1.6}
+.hint-box code{background:#FEF3C7;padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:11px}
+
+/* ── COPY SUCCESS ANIMATION ── */
+.copy-success-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#DCFCE7;color:#166534;border:1px solid #86EFAC;
+  border-radius:var(--rnd-md);padding:6px 14px;font-size:13px;font-weight:500;
+  opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s;
+  margin-top:6px;width:100%;justify-content:center;
+}
+.copy-success-badge.show{opacity:1;transform:translateY(0)}
+
+/* ── GOOGLE SHEET STATUS ── */
+.sheet-status{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--rnd-md);font-size:12px;margin-bottom:8px}
+.sheet-status-ok{background:#DCFCE7;color:#166534}
+.sheet-status-warn{background:#FEF3C7;color:#92400E}
+.sheet-status-err{background:var(--red-lt);color:var(--red-dk)}
+/* ── EDIT CHECKPOINT ── */
+.btn-edit{background:#FFF7ED;color:#92400E;border-color:#FDE68A;white-space:nowrap;font-size:11px;padding:4px 9px}
+.btn-edit:hover{background:#FEF3C7}
+.cp-edit-panel{margin-top:8px;background:var(--bg3);border-radius:var(--rnd-md);padding:10px;border:1px solid var(--bdr2)}
+.cp-edit-actions{display:flex;gap:6px;margin-top:8px}
+/* ── ADMIN FETCH ── */
+.adm-fetch-btn{background:var(--adm-lt);color:var(--adm);border:1px solid var(--adm-bdr);border-radius:var(--rnd-md);padding:8px 14px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:var(--fnt);font-weight:500;transition:background .15s}
+.adm-fetch-btn:hover{background:var(--adm-bdr)}
+.adm-fetch-btn:disabled{opacity:.55;cursor:not-allowed}
+.src-remote{background:#F3E8FF;color:#7C3AED;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600;margin-left:4px}
+.src-local{background:#FEF3C7;color:#92400E;font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600;margin-left:4px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════════════════════════════════
+     ① LOGIN
+══════════════════════════════════════ -->
+<div id="s-login" class="screen active">
+  <div class="topbar topbar-day" style="border-radius:var(--rnd-lg)">
+    <i class="ti ti-shield-check" style="font-size:22px"></i>
+    <div class="topbar-title"><h1>ระบบตรวจจุด รปภ.</h1><p>Security Checkpoint System v7</p></div>
+  </div>
+  <div class="card">
+    <div class="form-group">
+      <label class="label">ชื่อ รปภ.</label>
+      <input class="input" id="inp-name" placeholder="กรอกชื่อ-นามสกุล" autocomplete="name"/>
+    </div>
+    <div class="form-group">
+      <label class="label">รหัสพนักงาน</label>
+      <input class="input" id="inp-id" placeholder="เช่น SG001" autocomplete="off"/>
+    </div>
+    <div class="form-group">
+      <label class="label">เลือกกะ</label>
+      <div class="shift-pick">
+        <div class="shift-card sel-day" id="card-day" onclick="pickShift('day')">
+          <i class="ti ti-sun" style="color:#185FA5"></i>
+          <div class="sh-name">กะเช้า</div><div class="sh-time">08:00–20:00</div>
+        </div>
+        <div class="shift-card" id="card-night" onclick="pickShift('night')">
+          <i class="ti ti-moon" style="color:#534AB7"></i>
+          <div class="sh-name">กะดึก</div><div class="sh-time">20:00–08:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="label">เลือกรอบที่เดินตรวจ</label>
+      <div class="round-grid" id="round-grid"></div>
+    </div>
+    <button class="btn btn-day" id="login-btn" onclick="doLogin()">
+      <i class="ti ti-login"></i> เข้าสู่ระบบ (ผู้ตรวจ)
+    </button>
+    <div style="text-align:center;margin-top:10px">
+      <button style="background:none;border:none;font-size:12px;color:var(--txt2);cursor:pointer;text-decoration:underline;font-family:var(--fnt)" onclick="showAdminLogin()">
+        เข้าสู่ระบบ Admin / ผู้รับผิดชอบ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ② CHECKPOINT
+══════════════════════════════════════ -->
+<div id="s-check" class="screen">
+  <div class="topbar" id="hdr-check">
+    <button class="back-btn" onclick="goBack('s-check')">
+      <i class="ti ti-arrow-left"></i> กลับ
+    </button>
+    <div class="topbar-title">
+      <h1>ตรวจจุด</h1><p id="hdr-info">—</p>
+    </div>
+    <span class="role-pill role-user"><i class="ti ti-user" style="font-size:10px"></i> ผู้ตรวจ</span>
+  </div>
+  <div class="info-bar" id="round-bar">
+    <i class="ti ti-clock"></i><span id="round-bar-txt">—</span>
+  </div>
+  <div class="card" style="padding:.75rem 1.25rem">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:13px;color:var(--txt2)">ความคืบหน้า</span>
+      <span style="font-size:13px;font-weight:500" id="prog-txt">0 / 18</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn act-day" id="f-all" onclick="setFilter('all',this)">ทั้งหมด</button>
+    <button class="filter-btn" id="f-pending" onclick="setFilter('pending',this)">ยังไม่ตรวจ</button>
+    <button class="filter-btn" id="f-done" onclick="setFilter('done',this)">ตรวจแล้ว</button>
+  </div>
+  <div class="card" id="cp-list" style="padding:.5rem 1rem"></div>
+  <button class="btn btn-send" id="to-report-btn" style="margin-top:4px" onclick="goReport()">
+    <i class="ti ti-clipboard-list"></i> ดูรายงานก่อนส่ง
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
+     ③ REPORT (User view)
+══════════════════════════════════════ -->
+<div id="s-report" class="screen">
+  <div class="topbar" id="hdr-report">
+    <button class="back-btn" onclick="goBack('s-report')">
+      <i class="ti ti-arrow-left"></i> กลับ
+    </button>
+    <div class="topbar-title">
+      <h1>ตรวจสอบรายงาน</h1><p id="rpt-meta">—</p>
+    </div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" style="color:var(--grn)" id="rpt-done">0</div><div class="stat-lbl">ตรวจแล้ว</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)" id="rpt-left">18</div><div class="stat-lbl">ยังไม่ตรวจ</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--org)" id="rpt-alert">0</div><div class="stat-lbl">พบผิดปกติ</div></div>
+  </div>
+  <div class="card" id="rpt-list" style="padding:.5rem 1rem"></div>
+  <hr class="divider">
+  <button class="btn btn-send" id="send-btn" onclick="sendReport()">
+    <i class="ti ti-send"></i> ส่งรายงาน
+  </button>
+  <p style="font-size:11px;color:var(--txt2);text-align:center;margin-top:6px">ข้อมูลจะถูกบันทึกโดยอัตโนมัติ</p>
+</div>
+
+<!-- ══════════════════════════════════════
+     ④ SEND SUCCESS  ← แก้ไขหลัก: เพิ่มปุ่มคัดลอก
+══════════════════════════════════════ -->
+<div id="s-sent" class="screen">
+  <div class="topbar topbar-day">
+    <i class="ti ti-circle-check" style="font-size:22px"></i>
+    <div class="topbar-title"><h1>ส่งรายงานสำเร็จ</h1><p id="sent-meta">—</p></div>
+  </div>
+
+  <!-- Status card -->
+  <div class="card" style="text-align:center;padding:1.5rem 1.25rem">
+    <i class="ti ti-circle-check" style="font-size:48px;color:var(--grn);display:block;margin-bottom:8px"></i>
+    <p style="font-size:16px;font-weight:600;margin-bottom:6px">บันทึกรายงานแล้ว</p>
+    <p style="font-size:13px;color:var(--txt2)" id="sent-detail">ข้อมูลถูกส่งเรียบร้อย</p>
+
+    <!-- Google Sheet status -->
+    <div id="sheet-status-bar" style="display:none;margin-top:10px"></div>
+  </div>
+
+  <!-- Copy report card -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <p class="label" style="margin-bottom:0">📋 สรุปรายงาน</p>
+      <span style="font-size:11px;color:var(--txt2)">กดคัดลอกเพื่อส่ง Line</span>
+    </div>
+    <div class="copy-box" id="sent-preview">—</div>
+
+    <!-- Copy buttons -->
+    <div class="btn-row" style="margin-bottom:4px">
+      <button class="btn btn-copy" onclick="copyReport()">
+        <i class="ti ti-copy"></i> คัดลอกรายงาน
+      </button>
+      <button class="btn btn-copy-line" onclick="copyReport('line')">
+        <i class="ti ti-brand-line"></i> คัดลอก (Line)
+      </button>
+    </div>
+    <div class="copy-success-badge" id="copy-badge">
+      <i class="ti ti-check"></i> คัดลอกแล้ว! วางใน Line ได้เลย
+    </div>
+  </div>
+
+  <button class="btn" onclick="resetAll()">
+    <i class="ti ti-home"></i> กลับหน้าหลัก
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
+     ⑤ ADMIN LOGIN
+══════════════════════════════════════ -->
+<div id="s-admin-login" class="screen">
+  <div class="topbar topbar-admin" style="border-radius:var(--rnd-lg)">
+    <i class="ti ti-shield-lock" style="font-size:22px"></i>
+    <div class="topbar-title"><h1>Admin / ผู้รับผิดชอบ</h1><p>Security Dashboard</p></div>
+  </div>
+  <div class="card">
+    <div class="form-group">
+      <label class="label">รหัส Admin</label>
+      <input class="input" id="inp-admin-pw" type="password" placeholder="กรอกรหัสผ่าน Admin" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    </div>
+    <button class="btn btn-adm" onclick="doAdminLogin()">
+      <i class="ti ti-login"></i> เข้าสู่ระบบ Admin
+    </button>
+    <div style="text-align:center;margin-top:10px">
+      <button style="background:none;border:none;font-size:12px;color:var(--txt2);cursor:pointer;text-decoration:underline;font-family:var(--fnt)" onclick="show('s-login')">
+        ← กลับหน้าหลัก
+      </button>
+    </div>
+    <div class="hint-box" style="margin-top:12px">
+      <strong>AM โรงงานลำพูนสู้ๆ:</strong> <code></code><br>
+       <code>เฝ้าระวังด้วยใจ ปลอดภัยด้วยมาตรฐาน</code>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ⑥ ADMIN DASHBOARD
+══════════════════════════════════════ -->
+<div id="s-admin" class="screen">
+  <div class="topbar topbar-admin" style="border-radius:var(--rnd-lg)">
+    <i class="ti ti-layout-dashboard" style="font-size:20px"></i>
+    <div class="topbar-title"><h1>Admin Dashboard</h1><p>ระบบตรวจสอบรายงาน</p></div>
+    <span class="role-pill role-admin"><i class="ti ti-crown" style="font-size:10px"></i> Admin</span>
+  </div>
+
+  <!-- Google Sheet connection status + fetch remote data -->
+  <div id="adm-sheet-info" class="card" style="padding:.75rem 1.25rem;margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <div id="adm-conn-txt" style="flex:1;font-size:13px"></div>
+      <button class="adm-fetch-btn" id="adm-fetch-btn" onclick="fetchRemoteReports()">
+        <i class="ti ti-cloud-download"></i> ดึงข้อมูลจาก Sheet
+      </button>
+    </div>
+    <div id="adm-fetch-msg" style="margin-top:6px;font-size:12px;color:var(--txt2);display:none"></div>
+  </div>
+
+  <!-- Summary stat -->
+  <div class="stat-grid" id="adm-stat-grid">
+    <div class="stat-card"><div class="stat-num" style="color:var(--adm)" id="adm-total">0</div><div class="stat-lbl">รายงานทั้งหมด</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--grn)" id="adm-today">0</div><div class="stat-lbl">วันนี้</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--org)" id="adm-alerts">0</div><div class="stat-lbl">พบผิดปกติ</div></div>
+  </div>
+
+  <!-- Date filter -->
+  <div class="card" style="padding:.85rem 1.25rem">
+    <p class="label" style="margin-bottom:8px"><i class="ti ti-filter" style="font-size:13px"></i> กรองตามช่วงวันที่</p>
+    <div class="date-range-row">
+      <div>
+        <label class="label" style="margin-bottom:4px">วันที่เริ่มต้น</label>
+        <input class="input" type="date" id="date-from" style="font-size:13px" onchange="renderHistory()"/>
+      </div>
+      <div>
+        <label class="label" style="margin-bottom:4px">วันที่สิ้นสุด</label>
+        <input class="input" type="date" id="date-to" style="font-size:13px" onchange="renderHistory()"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="filter-btn act-adm" onclick="setDatePreset('today',this)">วันนี้</button>
+      <button class="filter-btn" onclick="setDatePreset('week',this)">7 วัน</button>
+      <button class="filter-btn" onclick="setDatePreset('month',this)">30 วัน</button>
+      <button class="filter-btn" onclick="setDatePreset('all',this)">ทั้งหมด</button>
+    </div>
+  </div>
+
+  <!-- History list -->
+  <div class="card" style="padding:.5rem 0" id="adm-hist-list">
+    <p style="font-size:13px;color:var(--txt2);padding:8px 16px">ยังไม่มีรายงาน</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-excel" id="adm-excel-btn" onclick="exportExcelAdmin()">
+      <i class="ti ti-file-spreadsheet"></i> Export Excel
+    </button>
+    <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="flex:none;padding:10px 14px">
+      <i class="ti ti-trash"></i>
+    </button>
+  </div>
+
+  <!-- Google Sheet setup guide -->
+  <div class="hint-box">
+    
+
+  <button class="btn" style="margin-top:4px" onclick="adminLogout()">
+    <i class="ti ti-logout"></i> ออกจากระบบ Admin
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
+     ⑦ ADMIN — VIEW ONE REPORT
+══════════════════════════════════════ -->
+<div id="s-admin-report" class="screen">
+  <div class="topbar topbar-admin">
+    <button class="back-btn" onclick="show('s-admin')">
+      <i class="ti ti-arrow-left"></i> กลับ
+    </button>
+    <div class="topbar-title">
+      <h1>รายละเอียดรายงาน</h1><p id="ar-meta">—</p>
+    </div>
+  </div>
+  <div class="stat-grid" id="ar-stats"></div>
+
+  <!-- Copy button for admin view too -->
+  <button class="btn btn-copy" style="margin-bottom:12px" onclick="copyAdminReport()">
+    <i class="ti ti-copy"></i> คัดลอกรายงานนี้
+  </button>
+
+  <div class="card" id="ar-list" style="padding:.5rem 1rem"></div>
+  <hr class="divider">
+  <button class="btn btn-excel" id="ar-excel-btn" onclick="exportSingleReport()">
+    <i class="ti ti-file-spreadsheet"></i> Export รายงานนี้เป็น Excel
+  </button>
+</div>
+
+</div><!-- .app -->
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLb()">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <img id="lb-img" src="" alt=""/>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SEND OVERLAY -->
+<div class="send-overlay" id="send-overlay">
+  <div class="send-big-spin"></div>
+  <span>กำลังส่งรายงาน…</span>
+</div>
+
+<!-- CONFIRM CLEAR MODAL -->
+<div class="modal-bg" id="modal-clear">
+  <div class="modal">
+    <h3>⚠️ ลบข้อมูลทั้งหมด?</h3>
+    <p>ข้อมูลรายงานทั้งหมดใน Local Storage จะถูกลบถาวร ไม่สามารถกู้คืนได้</p>
+    <div class="modal-btns">
+      <button class="btn btn-danger" onclick="confirmClear()">ยืนยัน ลบข้อมูล</button>
+      <button class="btn" onclick="document.getElementById('modal-clear').classList.remove('show')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — แก้ไขตรงนี้
+   ============================================================
+   SHEET_URL: วาง URL ของ Google Apps Script Web App
+   วิธีสร้าง Apps Script ดูในคู่มือ hint-box ด้านบน
+   
+   ตัวอย่าง:
+   const SHEET_URL = 'https://script.google.com/macros/s/AKfy.../exec';
+   ============================================================ */
+const ADMIN_PASS = 'am6287';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyDTT8sCuQ7-NnI22Plh90A4TZbfWMU8BTcdMEgf8UBSwRMQ44tiYVyHE4gG3Z6dj1x/exec'; // ← วาง URL ตรงนี้เพื่อให้ข้อมูลรวมศูนย์
+
+/* ============================================================
+   STATIC DATA
+   ============================================================ */
+const CPS=[
+  {id:1,name:'จุดอาคาร(ตาชั่ง หน้าร้าน จัดซื้อ)',icon:'ti-droplet'},
+  {id:2,name:'จุดหน้าสายพานจ่าย(อสร.)',icon:'ti-car'},
+  {id:3,name:'จุดห้องน้ำยาเอ็นไซม์',icon:'ti-tool'},
+  {id:4,name:'จุดห้อง MDB1',icon:'ti-flame'},
+  {id:5,name:'จุดบ้านพักผู้บริหาร',icon:'ti-circle'},
+  {id:6,name:'จุดอาคารเก็บเอกสารบัญชี',icon:'ti-building-warehouse'},
+  {id:7,name:'จุดห้องเครื่องปั๊มน้ำดับเพลิง',icon:'ti-steering-wheel'},
+  {id:8,name:'จุดหัวจ่ายฯ หมายเลข 6',icon:'ti-cylinder'},
+  {id:9,name:'จุดห้องควบคุม Dryer',icon:'ti-cylinder'},
+  {id:10,name:'หัวจ่ายฯ หมายเลข 9',icon:'ti-trash'},
+  {id:11,name:'ห้อง MDB2',icon:'ti-hammer'},
+  {id:12,name:'บริเวณไซโล',icon:'ti-cylinder'},
+  {id:13,name:'จุดโกดัง K3',icon:'ti-firetruck'},
+  {id:14,name:'จุดโกดัง K4',icon:'ti-home'},
+  {id:15,name:'จุดหอพักใหม่',icon:'ti-home'},
+  {id:16,name:'จุดห้องน้ำชาย-ห้องน้ำหญิง (โรงจอดรถ)',icon:'ti-tools-kitchen-2'},
+  {id:17,name:'จุดศูนย์เรียนรู้ TPM',icon:'ti-school'},
+  {id:18,name:'จุดโรงอาหาร',icon:'ti-building'},
+  {id:19,name:'จุดห้องพัสดุ',icon:'ti-building'},
+  {id:20,name:'จุดห้อง Server',icon:'ti-building'},
+];
+const ROUNDS=[
+  {r:1,time:'08:00–10:00',shift:'day'},{r:2,time:'10:00–12:00',shift:'day'},
+  {r:3,time:'12:00–14:00',shift:'day'},{r:4,time:'14:00–16:00',shift:'day'},
+  {r:5,time:'16:00–18:00',shift:'day'},{r:6,time:'18:00–20:00',shift:'day'},
+  {r:7,time:'20:00–22:00',shift:'night'},{r:8,time:'22:00–24:00',shift:'night'},
+  {r:9,time:'24:00–02:00',shift:'night'},{r:10,time:'02:00–04:00',shift:'night'},
+  {r:11,time:'04:00–06:00',shift:'night'},{r:12,time:'06:00–08:00',shift:'night'},
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let G={name:'',id:'',shift:'day',round:null};
+let checks={};
+let tempPhotos={};
+let curFilter='all';
+let viewingReport=null;
+let lastReport=null; // เก็บ report ล่าสุดสำหรับปุ่มคัดลอก
+
+/* ============================================================
+   LOCAL STORAGE
+   ============================================================ */
+const LS_KEY='rph_reports_v6';
+function loadReports(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+function saveReports(arr){ localStorage.setItem(LS_KEY,JSON.stringify(arr)); }
+function addReport(report){
+  const arr=loadReports();
+  arr.unshift(report);
+  saveReports(arr);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goBack(cur){
+  if(cur==='s-check') show('s-login');
+  else if(cur==='s-report') show('s-check');
+}
+
+/* ============================================================
+   SHIFT / ROUND PICKER
+   ============================================================ */
+function pickShift(s){
+  G.shift=s; G.round=null;
+  document.getElementById('card-day').className='shift-card'+(s==='day'?' sel-day':'');
+  document.getElementById('card-night').className='shift-card'+(s==='night'?' sel-night':'');
+  document.getElementById('login-btn').className='btn '+(s==='day'?'btn-day':'btn-night');
+  renderRounds();
+}
+function renderRounds(){
+  const g=document.getElementById('round-grid'); g.innerHTML='';
+  ROUNDS.filter(r=>r.shift===G.shift).forEach(rd=>{
+    const sel=G.round&&G.round.r===rd.r;
+    const d=document.createElement('div');
+    d.className='round-card'+(sel?(G.shift==='day'?' sel-day':' sel-night'):'');
+    d.innerHTML=`<span class="round-num">รอบ ${rd.r}</span><span class="round-time">${rd.time}</span>`;
+    d.onclick=()=>{G.round=rd;renderRounds();};
+    g.appendChild(d);
+  });
+}
+renderRounds();
+
+function applyTheme(){
+  const d=G.shift==='day';
+  const hc=d?'topbar-day':'topbar-night';
+  document.getElementById('hdr-check').className='topbar '+hc;
+  document.getElementById('hdr-report').className='topbar '+hc;
+  document.getElementById('prog-fill').style.background=d?'var(--grn)':'#7F77DD';
+  document.getElementById('to-report-btn').className='btn btn-send';
+  document.getElementById('round-bar').className='info-bar '+(d?'info-bar-day':'info-bar-night');
+  const ac=d?'act-day':'act-night';
+  ['f-all','f-pending','f-done'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el.classList.contains('act-day')||el.classList.contains('act-night'))
+      el.className='filter-btn '+ac;
+  });
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+function doLogin(){
+  const n=document.getElementById('inp-name').value.trim();
+  const i=document.getElementById('inp-id').value.trim();
+  if(!n||!i){ showToast('กรุณากรอกชื่อและรหัสพนักงาน','err'); return; }
+  if(!G.round){ showToast('กรุณาเลือกรอบที่เดินตรวจ','err'); return; }
+  G.name=n; G.id=i;
+  const sh=G.shift==='day'?'กะเช้า (08:00–20:00)':'กะดึก (20:00–08:00)';
+  document.getElementById('hdr-info').textContent=n+' · '+sh;
+  document.getElementById('round-bar-txt').textContent='รอบที่ '+G.round.r+' เวลา '+G.round.time+' น.';
+  checks={}; tempPhotos={}; curFilter='all';
+  applyTheme(); renderCPs(); show('s-check');
+}
+
+/* ============================================================
+   ADMIN LOGIN
+   ============================================================ */
+function showAdminLogin(){ show('s-admin-login'); document.getElementById('inp-admin-pw').value=''; }
+function doAdminLogin(){
+  const pw=document.getElementById('inp-admin-pw').value;
+  if(pw===ADMIN_PASS){ show('s-admin'); renderAdminDash(); }
+  else { showToast('รหัส Admin ไม่ถูกต้อง','err'); }
+}
+function adminLogout(){ show('s-login'); }
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+function setFilter(f,btn){
+  curFilter=f;
+  const ac=G.shift==='day'?'act-day':'act-night';
+  document.querySelectorAll('.filter-btn').forEach(b=>b.className='filter-btn');
+  btn.className='filter-btn '+ac;
+  renderCPs();
+}
+
+/* ============================================================
+   RENDER CHECKPOINTS
+   ============================================================ */
+function renderCPs(){
+  const list=document.getElementById('cp-list'); list.innerHTML='';
+  const done=Object.values(checks).filter(c=>c.done).length;
+  document.getElementById('prog-txt').textContent=done+' / '+CPS.length;
+  document.getElementById('prog-fill').style.width=Math.round(done/CPS.length*100)+'%';
+  const filtered=CPS.filter(cp=>{
+    const c=checks[cp.id]||{};
+    if(curFilter==='done') return c.done;
+    if(curFilter==='pending') return !c.done;
+    return true;
+  });
+  if(!filtered.length){
+    list.innerHTML='<p style="font-size:13px;color:var(--txt2);padding:8px 0;text-align:center">ไม่มีรายการ</p>';
+    return;
+  }
+  filtered.forEach(cp=>{
+    const c=checks[cp.id]||{done:false,time:'',note:'',photos:[]};
+    const photos=c.photos||[];
+    const row=document.createElement('div');
+    row.className='cp-row'; row.id='row-'+cp.id;
+    if(c.done){
+      const photoHtml=photos.length
+        ? `<div class="rpt-photos">${photos.map((p,i)=>`<img class="rpt-photo" src="${p.dataUrl}" onclick="openLb('${p.dataUrl}')" alt="รูป ${i+1}"/>`).join('')}</div>`
+        : '';
+      row.innerHTML=`
+        <div class="cp-num done">${cp.id}</div>
+        <div class="cp-info">
+          <div class="cp-name"><i class="ti ${cp.icon}" style="font-size:14px;margin-right:4px"></i>${cp.name}</div>
+          <div class="cp-time"><i class="ti ti-clock" style="font-size:12px"></i> ${c.time} น.</div>
+          ${c.note?`<div class="cp-note-txt"><i class="ti ti-alert-triangle" style="font-size:12px"></i>${c.note}</div>`:''}
+          ${photos.length?`<div style="margin-top:3px"><span class="photo-count"><i class="ti ti-photo" style="font-size:11px"></i> ${photos.length} ภาพ</span></div>`:''}
+          ${photoHtml}
+        </div>
+        <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+          <span class="badge badge-green"><i class="ti ti-check"></i> เสร็จ</span>
+          <button class="btn btn-edit btn-xs" onclick="startEdit(${cp.id})">
+            <i class="ti ti-pencil" style="font-size:11px"></i> แก้ไข
+          </button>
+        </div>`;
+    } else {
+      row.innerHTML=`
+        <div class="cp-num">${cp.id}</div>
+        <div class="cp-info">
+          <div class="cp-name"><i class="ti ${cp.icon}" style="font-size:14px;margin-right:4px"></i>${cp.name}</div>
+          <textarea class="textarea" id="note-${cp.id}" placeholder="หมายเหตุ (ถ้าพบผิดปกติ)" rows="2"></textarea>
+          <div class="photo-area">
+            <div class="photo-btn-row">
+              <label class="photo-btn" for="photo-${cp.id}">
+                <i class="ti ti-upload" style="font-size:14px"></i> แนบรูป
+              </label>
+              <label class="photo-btn" for="cam-${cp.id}">
+                <i class="ti ti-camera" style="font-size:14px"></i> ถ่ายรูป
+              </label>
+            </div>
+            <input class="photo-input" type="file" id="photo-${cp.id}" accept="image/*" multiple onchange="handlePhoto(${cp.id},this)"/>
+            <input class="photo-input" type="file" id="cam-${cp.id}" accept="image/*" capture="environment" onchange="handlePhoto(${cp.id},this)"/>
+            <div class="photo-previews" id="prev-${cp.id}"></div>
+          </div>
+        </div>
+        <div style="flex-shrink:0">
+          <button class="btn btn-check btn-sm" onclick="doCheckIn(${cp.id})">
+            <i class="ti ti-map-pin"></i> เช็คอิน
+          </button>
+        </div>`;
+    }
+    list.appendChild(row);
+  });
+}
+
+/* ============================================================
+   PHOTO HANDLING
+   ============================================================ */
+function handlePhoto(id, input){
+  if(!tempPhotos[id]) tempPhotos[id]=[];
+  Array.from(input.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      resizeImage(e.target.result, 800, (resized)=>{
+        tempPhotos[id].push({dataUrl:resized, name:file.name});
+        renderPrev(id);
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+function resizeImage(dataUrl, maxSize, cb){
+  const img=new Image();
+  img.onload=()=>{
+    let w=img.width, h=img.height;
+    if(w>maxSize||h>maxSize){
+      if(w>h){ h=Math.round(h*maxSize/w); w=maxSize; }
+      else { w=Math.round(w*maxSize/h); h=maxSize; }
+    }
+    const canvas=document.createElement('canvas');
+    canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    cb(canvas.toDataURL('image/jpeg',0.82));
+  };
+  img.src=dataUrl;
+}
+function renderPrev(id){
+  const c=document.getElementById('prev-'+id);
+  if(!c) return;
+  c.innerHTML='';
+  (tempPhotos[id]||[]).forEach((p,i)=>{
+    const w=document.createElement('div');
+    w.className='photo-thumb-wrap';
+    w.innerHTML=`<img class="photo-thumb" src="${p.dataUrl}" onclick="openLb('${p.dataUrl}')"/>
+      <button class="photo-remove" onclick="removeTemp(${id},${i})">✕</button>`;
+    c.appendChild(w);
+  });
+}
+function removeTemp(id,i){
+  if(tempPhotos[id]) tempPhotos[id].splice(i,1);
+  renderPrev(id);
+}
+
+/* ============================================================
+   CHECK-IN
+   ============================================================ */
+function doCheckIn(id){
+  const note=(document.getElementById('note-'+id)||{value:''}).value.trim();
+  const now=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  const photos=[...(tempPhotos[id]||[])];
+  checks[id]={done:true,time:now,note,photos};
+  delete tempPhotos[id];
+  renderCPs();
+  showToast('เช็คอินจุด '+id+' แล้ว','ok');
+}
+
+/* ============================================================
+   EDIT CHECKPOINT — แก้ไขจุดที่เช็คอินแล้ว
+   ============================================================ */
+function startEdit(id){
+  // ถ้ามี panel อยู่แล้วให้ยุบก่อน
+  const existing=document.getElementById('edit-panel-'+id);
+  if(existing){ existing.remove(); delete tempPhotos['e'+id]; return; }
+
+  const cp=CPS.find(c=>c.id===id);
+  const c=checks[id]||{};
+  tempPhotos['e'+id]=[...(c.photos||[])];
+
+  const row=document.getElementById('row-'+id);
+  if(!row) return;
+
+  const panel=document.createElement('div');
+  panel.id='edit-panel-'+id;
+  panel.className='cp-edit-panel';
+  panel.innerHTML=`
+    <div style="font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:6px">
+      <i class="ti ti-pencil" style="font-size:11px"></i> แก้ไขจุด ${id} · ${cp?cp.name:''}
+    </div>
+    <textarea class="textarea" id="edit-note-${id}" rows="2" placeholder="หมายเหตุ (ถ้าพบผิดปกติ)">${c.note||''}</textarea>
+    <div class="photo-area" style="margin-top:6px">
+      <div class="photo-btn-row">
+        <label class="photo-btn" for="ep-${id}"><i class="ti ti-upload" style="font-size:13px"></i> แนบรูป</label>
+        <label class="photo-btn" for="ec-${id}"><i class="ti ti-camera" style="font-size:13px"></i> ถ่ายรูป</label>
+      </div>
+      <input class="photo-input" type="file" id="ep-${id}" accept="image/*" multiple onchange="handleEditPhoto(${id},this)"/>
+      <input class="photo-input" type="file" id="ec-${id}" accept="image/*" capture="environment" onchange="handleEditPhoto(${id},this)"/>
+      <div class="photo-previews" id="eprev-${id}"></div>
+    </div>
+    <div class="cp-edit-actions">
+      <button class="btn btn-send btn-sm" onclick="saveEdit(${id})"><i class="ti ti-check"></i> บันทึก</button>
+      <button class="btn btn-sm" onclick="cancelEdit(${id})">ยกเลิก</button>
+    </div>`;
+
+  row.appendChild(panel);
+  renderEditPrev(id);
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function handleEditPhoto(id,input){
+  if(!tempPhotos['e'+id]) tempPhotos['e'+id]=[];
+  Array.from(input.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      resizeImage(e.target.result,800,(resized)=>{
+        tempPhotos['e'+id].push({dataUrl:resized,name:file.name});
+        renderEditPrev(id);
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function renderEditPrev(id){
+  const c=document.getElementById('eprev-'+id);
+  if(!c) return;
+  c.innerHTML='';
+  (tempPhotos['e'+id]||[]).forEach((p,i)=>{
+    const w=document.createElement('div');
+    w.className='photo-thumb-wrap';
+    w.innerHTML=`<img class="photo-thumb" src="${p.dataUrl}" onclick="openLb('${p.dataUrl}')"/>
+      <button class="photo-remove" onclick="removeEditPhoto(${id},${i})">✕</button>`;
+    c.appendChild(w);
+  });
+}
+
+function removeEditPhoto(id,i){
+  if(tempPhotos['e'+id]) tempPhotos['e'+id].splice(i,1);
+  renderEditPrev(id);
+}
+
+function saveEdit(id){
+  const note=(document.getElementById('edit-note-'+id)||{value:''}).value.trim();
+  const photos=[...(tempPhotos['e'+id]||[])];
+  checks[id].note=note;
+  checks[id].photos=photos;
+  delete tempPhotos['e'+id];
+  renderCPs();
+  showToast('แก้ไขจุด '+id+' สำเร็จ','ok');
+}
+
+function cancelEdit(id){
+  delete tempPhotos['e'+id];
+  const p=document.getElementById('edit-panel-'+id);
+  if(p) p.remove();
+}
+
+/* ============================================================
+   REPORT SCREEN (user)
+   ============================================================ */
+function goReport(){
+  const done=CPS.filter(cp=>checks[cp.id]&&checks[cp.id].done).length;
+  const alerts=CPS.filter(cp=>checks[cp.id]&&checks[cp.id].done&&checks[cp.id].note).length;
+  const sh=G.shift==='day'?'กะเช้า':'กะดึก';
+  document.getElementById('rpt-meta').textContent=G.name+' · '+sh+' รอบ '+G.round.r;
+  document.getElementById('rpt-done').textContent=done;
+  document.getElementById('rpt-left').textContent=CPS.length-done;
+  document.getElementById('rpt-alert').textContent=alerts;
+  renderReportList('rpt-list', CPS, checks, true);
+  show('s-report');
+}
+
+function renderReportList(containerId, cpList, chkData, isUser){
+  const list=document.getElementById(containerId); list.innerHTML='';
+  cpList.forEach(cp=>{
+    const c=chkData[cp.id]||{};
+    const photos=c.photos||[];
+    const row=document.createElement('div');
+    row.className='report-row';
+    const photoHtml=photos.length
+      ? `<div class="rpt-photos">${photos.map((p,i)=>`<img class="rpt-photo" src="${p.dataUrl}" onclick="openLb('${p.dataUrl}')" alt="รูป ${i+1}"/>`).join('')}</div>`
+      : '';
+    row.innerHTML=`
+      <div class="report-row-top">
+        <div class="report-name">
+          <span style="color:var(--txt2);min-width:20px;font-size:12px">${cp.id}.</span>
+          <span>${cp.name}</span>
+          ${c.note?`<i class="ti ti-alert-triangle" style="font-size:13px;color:var(--org);flex-shrink:0"></i>`:''}
+        </div>
+        <div style="flex-shrink:0">${c.done
+          ?`<span class="badge badge-green"><i class="ti ti-check"></i> ${c.time}</span>`
+          :`<span class="badge badge-red"><i class="ti ti-x"></i> ยังไม่ตรวจ</span>`
+        }</div>
+      </div>
+      ${c.note?`<div style="font-size:12px;color:var(--org-dk);margin-top:4px;display:flex;align-items:center;gap:4px"><i class="ti ti-alert-triangle" style="font-size:12px"></i>${c.note}</div>`:''}
+      ${photos.length?`<div style="margin-top:3px"><span class="photo-count"><i class="ti ti-photo" style="font-size:11px"></i> ${photos.length} ภาพ</span></div>`:''}
+      ${photoHtml}`;
+    list.appendChild(row);
+  });
+}
+
+/* ============================================================
+   SEND REPORT
+   ============================================================ */
+async function sendReport(){
+  const btn=document.getElementById('send-btn');
+  btn.disabled=true;
+  document.getElementById('send-overlay').classList.add('show');
+
+  const now=new Date();
+  const report={
+    id: 'rpt_'+now.getTime(),
+    sentAt: now.toISOString(),
+    date: now.toLocaleDateString('th-TH'),
+    dateISO: now.toISOString().slice(0,10),
+    time: now.toLocaleTimeString('th-TH'),
+    name: G.name,
+    empId: G.id,
+    shift: G.shift==='day'?'กะเช้า':'กะดึก',
+    round: G.round.r,
+    roundTime: G.round.time,
+    checks: JSON.parse(JSON.stringify(checks)),
+    summary:{
+      total: CPS.length,
+      done: CPS.filter(cp=>checks[cp.id]&&checks[cp.id].done).length,
+      alerts: CPS.filter(cp=>checks[cp.id]&&checks[cp.id].done&&checks[cp.id].note).length
+    }
+  };
+
+  addReport(report);
+  lastReport=report; // เก็บไว้สำหรับปุ่มคัดลอก
+
+  // Try send to Google Sheets (รวมรูป base64 ให้ GAS อัปโหลด Drive)
+  let sheetOk=false;
+  let sheetErr='';
+  if(SHEET_URL){
+    try{
+      const payload={...report};
+      payload.checks={};
+      Object.entries(report.checks).forEach(([k,v])=>{
+        // ส่งรูปเป็น base64 ให้ GAS เอาไปอัปโหลด Google Drive
+        const photos=(v.photos||[]).map(p=>({
+          b64: p.dataUrl.split(',')[1]||'',
+          mime: (p.dataUrl.match(/data:(.*?);/)||['','image/jpeg'])[1],
+          name: p.name||('cp'+k+'_'+Date.now()+'.jpg')
+        }));
+        payload.checks[k]={done:v.done,time:v.time,note:v.note,photoCount:photos.length,photos};
+      });
+      await fetch(SHEET_URL,{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      sheetOk=true;
+    }catch(e){ sheetErr=e.message; console.warn('Sheet error:',e); }
+  }
+
+  document.getElementById('send-overlay').classList.remove('show');
+  btn.disabled=false;
+
+  // Success screen
+  const sh=G.shift==='day'?'กะเช้า':'กะดึก';
+  document.getElementById('sent-meta').textContent=G.name+' · '+sh+' รอบ '+G.round.r;
+  document.getElementById('sent-detail').textContent=
+    `บันทึก ${report.summary.done}/${CPS.length} จุด · ${report.date} เวลา ${report.time}`;
+
+  // Google Sheet status bar
+  const statusBar=document.getElementById('sheet-status-bar');
+  if(SHEET_URL){
+    statusBar.style.display='flex';
+    if(sheetOk){
+      statusBar.className='sheet-status sheet-status-ok';
+      statusBar.innerHTML='<i class="ti ti-table-check" style="font-size:16px"></i> ส่งข้อมูลไปยัง Google Sheet เรียบร้อย';
+    } else {
+      statusBar.className='sheet-status sheet-status-err';
+      statusBar.innerHTML='<i class="ti ti-table-off" style="font-size:16px"></i> ไม่สามารถส่ง Google Sheet ได้';
+    }
+  } else {
+    statusBar.style.display='flex';
+    statusBar.className='sheet-status sheet-status-warn';
+    statusBar.innerHTML='<i class="ti ti-info-circle" style="font-size:16px"></i> บันทึกเฉพาะในเครื่องนี้ (ยังไม่ได้ตั้งค่า Google Sheet)';
+  }
+
+  // Reset copy badge
+  document.getElementById('copy-badge').classList.remove('show');
+
+  document.getElementById('sent-preview').textContent=buildTextReport(report);
+  show('s-sent');
+}
+
+/* ============================================================
+   BUILD TEXT REPORT
+   ============================================================ */
+function buildTextReport(rpt){
+  const cpList=CPS;
+  const chk=rpt.checks;
+  let txt='============================\n';
+  txt+='รายงานตรวจจุด รปภ.\n';
+  txt+='============================\n';
+  txt+=`ชื่อ: ${rpt.name}  รหัส: ${rpt.empId}\n`;
+  txt+=`${rpt.shift} · รอบ ${rpt.round} (${rpt.roundTime} น.)\n`;
+  txt+=`วันที่: ${rpt.date}  เวลาส่ง: ${rpt.time}\n`;
+  txt+='----------------------------\n';
+  txt+=`ตรวจแล้ว: ${rpt.summary.done}/${rpt.summary.total} จุด\n`;
+  txt+=`พบผิดปกติ: ${rpt.summary.alerts} จุด\n`;
+  txt+='----------------------------\n';
+  cpList.forEach(cp=>{
+    const c=chk[cp.id]||{};
+    if(c.done){
+      txt+=`✅ ${cp.id}. ${cp.name} — ${c.time} น.`;
+      if(c.note) txt+=` ⚠️ ${c.note}`;
+      const pLen=Array.isArray(c.photos)?c.photos.length:(c.photos||0);
+      if(pLen) txt+=` 📷${pLen}รูป`;
+      txt+='\n';
+    } else {
+      txt+=`❌ ${cp.id}. ${cp.name}\n`;
+    }
+  });
+  txt+='============================';
+  return txt;
+}
+
+/* ============================================================
+   COPY REPORT — ปุ่มคัดลอกสำหรับส่ง Line
+   ============================================================ */
+function copyReport(mode){
+  if(!lastReport){ showToast('ไม่พบข้อมูลรายงาน','err'); return; }
+  const txt=buildTextReport(lastReport);
+  
+  // ลอง Clipboard API ก่อน (ทำงานได้ดีบน iOS/Android ด้วย)
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>{
+      showCopySuccess();
+    }).catch(()=>{
+      fallbackCopy(txt);
+    });
+  } else {
+    fallbackCopy(txt);
+  }
+}
+
+function fallbackCopy(txt){
+  // วิธีเก่า — ใช้ textarea ชั่วคราว
+  const ta=document.createElement('textarea');
+  ta.value=txt;
+  ta.style.position='fixed';
+  ta.style.opacity='0';
+  ta.style.top='0';
+  ta.style.left='0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try{
+    document.execCommand('copy');
+    showCopySuccess();
+  } catch(e){
+    showToast('ไม่สามารถคัดลอกได้ กรุณาเลือกข้อความแล้วคัดลอกเอง','err');
+  }
+  document.body.removeChild(ta);
+}
+
+function showCopySuccess(){
+  const badge=document.getElementById('copy-badge');
+  badge.classList.add('show');
+  showToast('คัดลอกรายงานแล้ว! วางใน Line ได้เลย','ok');
+  setTimeout(()=>badge.classList.remove('show'), 4000);
+}
+
+// สำหรับปุ่มคัดลอกในหน้า Admin view
+function copyAdminReport(){
+  if(!viewingReport){ showToast('ไม่พบข้อมูลรายงาน','err'); return; }
+  const txt=buildTextReport(viewingReport);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>{
+      showToast('คัดลอกรายงานแล้ว','ok');
+    }).catch(()=>{
+      fallbackCopySimple(txt);
+    });
+  } else {
+    fallbackCopySimple(txt);
+  }
+}
+
+function fallbackCopySimple(txt){
+  const ta=document.createElement('textarea');
+  ta.value=txt;
+  ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try{ document.execCommand('copy'); showToast('คัดลอกแล้ว','ok'); }
+  catch(e){ showToast('คัดลอกไม่ได้ กรุณาเลือกข้อความเอง','err'); }
+  document.body.removeChild(ta);
+}
+
+/* ============================================================
+   ADMIN DASHBOARD
+   ============================================================ */
+// รายงานที่ดึงมาจาก Google Sheet (จากทุกเครื่อง)
+let remoteReports=[];
+let useRemote=false;
+
+function renderAdminDash(){
+  refreshStats();
+
+  // Sheet connection status
+  const connTxt=document.getElementById('adm-conn-txt');
+  const fetchBtn=document.getElementById('adm-fetch-btn');
+  if(SHEET_URL){
+    connTxt.innerHTML=`<span style="color:#166534;font-weight:600">
+      <i class="ti ti-table-check" style="font-size:13px"></i> เชื่อมต่อ Google Sheet แล้ว</span>
+      <div style="font-size:11px;color:var(--txt2);margin-top:2px">
+        กด "ดึงข้อมูลจาก Sheet" เพื่อโหลดรายงานจากทุกเครื่อง
+      </div>`;
+    if(fetchBtn) fetchBtn.style.display='inline-flex';
+  } else {
+    connTxt.innerHTML=`<span style="color:#92400E;font-weight:600">
+      <i class="ti ti-table-off" style="font-size:13px"></i> ยังไม่ตั้งค่า Google Sheet</span>
+      <div style="font-size:11px;color:var(--txt2);margin-top:2px">
+        Admin จะเห็นเฉพาะรายงานในเครื่องนี้เท่านั้น
+      </div>`;
+    if(fetchBtn) fetchBtn.style.display='none';
+  }
+
+  const fi=document.getElementById('date-from');
+  const ti=document.getElementById('date-to');
+  const today=new Date().toISOString().slice(0,10);
+  if(!fi.value){ fi.value=today; ti.value=today; }
+  renderHistory();
+}
+
+function refreshStats(){
+  const reports=useRemote ? remoteReports : loadReports();
+  const today=new Date().toISOString().slice(0,10);
+  const todayRpts=reports.filter(r=>r.dateISO===today);
+  const totalAlerts=reports.reduce((s,r)=>s+(r.summary?r.summary.alerts:0)||0,0);
+  document.getElementById('adm-total').textContent=reports.length;
+  document.getElementById('adm-today').textContent=todayRpts.length;
+  document.getElementById('adm-alerts').textContent=totalAlerts;
+}
+
+/* ── ดึงรายงานจาก Google Sheet (ต้องให้ GAS มี doGet คืน JSON) ── */
+async function fetchRemoteReports(){
+  if(!SHEET_URL){ showToast('ยังไม่ได้ตั้งค่า SHEET_URL','err'); return; }
+  const btn=document.getElementById('adm-fetch-btn');
+  const msg=document.getElementById('adm-fetch-msg');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin" style="border-top-color:var(--adm)"></span> กำลังดึงข้อมูล…';
+  msg.style.display='block';
+  msg.textContent='กำลังเชื่อมต่อ Google Sheet…';
+  try{
+    // เรียก GAS doGet ที่ return JSON รายงาน
+    const res=await fetch(SHEET_URL+'?action=getReports',{method:'GET'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    if(!data||!Array.isArray(data.reports)) throw new Error('รูปแบบข้อมูลไม่ถูกต้อง');
+    remoteReports=data.reports;
+    useRemote=true;
+    refreshStats();
+    renderHistory();
+    const msgTxt=`โหลดสำเร็จ ${remoteReports.length} รายงาน จาก Google Sheet`;
+    msg.innerHTML=`<span style="color:#166534">✅ ${msgTxt}</span>`;
+    showToast(msgTxt,'ok');
+    // บันทึกลง localStorage ด้วยเพื่อ cache
+    const merged=mergeReports(loadReports(), remoteReports);
+    saveReports(merged);
+  }catch(e){
+    msg.innerHTML=`<span style="color:var(--red-dk)">❌ ดึงข้อมูลไม่ได้: ${e.message}</span>
+      <div style="margin-top:4px;color:var(--txt2)">ตรวจสอบว่า Apps Script มีฟังก์ชัน doGet ที่ return JSON และ deploy เป็น "Anyone"</div>`;
+    console.error('fetchRemote error:',e);
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="ti ti-cloud-download"></i> ดึงข้อมูลจาก Sheet';
+  }
+}
+
+/* รวม local + remote ไม่ซ้ำ (ใช้ report.id) */
+function mergeReports(local, remote){
+  const map={};
+  [...local,...remote].forEach(r=>{ if(r&&r.id) map[r.id]=r; });
+  return Object.values(map).sort((a,b)=>b.sentAt>a.sentAt?1:-1);
+}
+
+function setDatePreset(preset, btn){
+  document.querySelectorAll('#s-admin .filter-btn').forEach(b=>b.className='filter-btn');
+  btn.className='filter-btn act-adm';
+  const today=new Date().toISOString().slice(0,10);
+  const fi=document.getElementById('date-from');
+  const ti=document.getElementById('date-to');
+  if(preset==='today'){ fi.value=today; ti.value=today; }
+  else if(preset==='week'){
+    const d=new Date(); d.setDate(d.getDate()-6);
+    fi.value=d.toISOString().slice(0,10); ti.value=today;
+  }
+  else if(preset==='month'){
+    const d=new Date(); d.setDate(d.getDate()-29);
+    fi.value=d.toISOString().slice(0,10); ti.value=today;
+  }
+  else { fi.value=''; ti.value=''; }
+  renderHistory();
+}
+
+function renderHistory(){
+  // ใช้ remote ถ้าดึงมาแล้ว มิฉะนั้นใช้ local
+  const allReports=useRemote ? mergeReports(loadReports(),remoteReports) : loadReports();
+  const from=document.getElementById('date-from').value;
+  const to=document.getElementById('date-to').value;
+  const filtered=allReports.filter(r=>{
+    if(!r||!r.summary) return false;
+    if(from&&r.dateISO<from) return false;
+    if(to&&r.dateISO>to) return false;
+    return true;
+  });
+  const list=document.getElementById('adm-hist-list');
+  list.innerHTML='';
+
+  // แสดง source tag
+  const sourceLabel=useRemote
+    ? `<div style="padding:6px 12px;font-size:11px;color:var(--adm);border-bottom:0.5px solid var(--bdr1)">
+        <i class="ti ti-cloud" style="font-size:11px"></i> แสดงข้อมูลจาก Google Sheet (ทุกเครื่อง) — ${filtered.length} รายการ
+       </div>`
+    : `<div style="padding:6px 12px;font-size:11px;color:var(--txt2);border-bottom:0.5px solid var(--bdr1)">
+        <i class="ti ti-device-mobile" style="font-size:11px"></i> แสดงข้อมูลเฉพาะเครื่องนี้ — ${filtered.length} รายการ
+       </div>`;
+  list.innerHTML=sourceLabel;
+
+  if(!filtered.length){
+    list.innerHTML+=`<p style="font-size:13px;color:var(--txt2);padding:12px 16px;text-align:center">
+      ${useRemote?'ไม่พบรายงานใน Google Sheet ช่วงที่เลือก':'ไม่พบรายงานในช่วงที่เลือก'}</p>`;
+    return;
+  }
+  filtered.forEach(rpt=>{
+    const item=document.createElement('div');
+    item.className='hist-item';
+    const alerts=(rpt.summary&&rpt.summary.alerts)||0;
+    const alertBadge=alerts>0
+      ?`<span class="badge badge-org" style="font-size:11px"><i class="ti ti-alert-triangle"></i> ${alerts}</span>`:'';
+    const chks=rpt.checks||{};
+    const photoCps=Object.values(chks).filter(c=>c&&c.done&&(Array.isArray(c.photos)?c.photos.length:(c.photoCount||c.photos||0))>0).length;
+    const srcTag=rpt._remote?`<span class="src-remote">☁ Sheet</span>`:`<span class="src-local">📱 เครื่องนี้</span>`;
+    item.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            ${rpt.name} ${srcTag} · ${rpt.shift} รอบ ${rpt.round}
+          </div>
+          <div class="hist-meta">
+            ${rpt.date} · ${rpt.time} · ตรวจ ${(rpt.summary&&rpt.summary.done)||0}/${(rpt.summary&&rpt.summary.total)||18} จุด
+            ${photoCps?`· 📷 ${photoCps} จุด`:''}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          ${alertBadge}
+          <i class="ti ti-chevron-right" style="font-size:14px;color:var(--txt2)"></i>
+        </div>
+      </div>`;
+    item.onclick=()=>viewReport(rpt);
+    list.appendChild(item);
+  });
+}
+
+/* ============================================================
+   ADMIN VIEW ONE REPORT
+   ============================================================ */
+function viewReport(rpt){
+  viewingReport=rpt;
+  document.getElementById('ar-meta').textContent=rpt.name+' · '+rpt.shift+' รอบ '+rpt.round+' · '+rpt.date;
+  const stats=document.getElementById('ar-stats');
+  stats.innerHTML=`
+    <div class="stat-card"><div class="stat-num" style="color:var(--grn)">${rpt.summary.done}</div><div class="stat-lbl">ตรวจแล้ว</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${rpt.summary.total-rpt.summary.done}</div><div class="stat-lbl">ยังไม่ตรวจ</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--org)">${rpt.summary.alerts}</div><div class="stat-lbl">พบผิดปกติ</div></div>`;
+  renderReportList('ar-list', CPS, rpt.checks, false);
+  show('s-admin-report');
+}
+
+/* ============================================================
+   EXPORT EXCEL
+   ============================================================ */
+async function exportExcelAdmin(){
+  const btn=document.getElementById('adm-excel-btn');
+  btn.innerHTML='<span class="spin"></span> กำลังสร้าง...';
+  btn.disabled=true;
+  try{
+    const from=document.getElementById('date-from').value;
+    const to=document.getElementById('date-to').value;
+    const reports=loadReports().filter(r=>{
+      if(from&&r.dateISO<from) return false;
+      if(to&&r.dateISO>to) return false;
+      return true;
+    });
+    if(!reports.length){ showToast('ไม่มีรายงานในช่วงที่เลือก','err'); return; }
+    await buildExcel(reports, `รายงาน_รปภ_${from||'all'}_${to||'all'}`);
+  }finally{
+    btn.innerHTML='<i class="ti ti-file-spreadsheet"></i> Export Excel';
+    btn.disabled=false;
+  }
+}
+async function exportSingleReport(){
+  if(!viewingReport) return;
+  const btn=document.getElementById('ar-excel-btn');
+  btn.innerHTML='<span class="spin"></span> กำลังสร้าง...';
+  btn.disabled=true;
+  try{
+    await buildExcel([viewingReport], `รายงาน_รปภ_${viewingReport.name}_รอบ${viewingReport.round}_${viewingReport.date}`);
+  }finally{
+    btn.innerHTML='<i class="ti ti-file-spreadsheet"></i> Export รายงานนี้เป็น Excel';
+    btn.disabled=false;
+  }
+}
+async function buildExcel(reports, filename){
+  const wb=XLSX.utils.book_new();
+  const sumRows=[
+    ['รายงานการตรวจจุด รปภ.'],
+    ['สร้างเมื่อ', new Date().toLocaleString('th-TH')],
+    ['จำนวนรายงาน', reports.length],
+    [],
+    ['วันที่','เวลาส่ง','ชื่อผู้ตรวจ','รหัส','กะ','รอบ','ช่วงเวลา','ตรวจแล้ว','ยังไม่ตรวจ','พบผิดปกติ']
+  ];
+  reports.forEach(r=>{
+    sumRows.push([r.date,r.time,r.name,r.empId,r.shift,r.round,r.roundTime,
+      r.summary.done,r.summary.total-r.summary.done,r.summary.alerts]);
+  });
+  const wsSumm=XLSX.utils.aoa_to_sheet(sumRows);
+  wsSumm['!cols']=[{wch:14},{wch:12},{wch:18},{wch:10},{wch:10},{wch:8},{wch:14},{wch:10},{wch:10},{wch:10}];
+  XLSX.utils.book_append_sheet(wb,wsSumm,'สรุปรายงาน');
+
+  const detRows=[['วันที่','เวลาส่ง','ชื่อผู้ตรวจ','รหัส','กะ','รอบ','ลำดับจุด','จุดตรวจ','สถานะ','เวลาตรวจ','หมายเหตุ','จำนวนรูป']];
+  reports.forEach(r=>{
+    CPS.forEach(cp=>{
+      const c=r.checks[cp.id]||{};
+      const pLen=Array.isArray(c.photos)?c.photos.length:(c.photos||0);
+      detRows.push([r.date,r.time,r.name,r.empId,r.shift,r.round,
+        cp.id,cp.name,c.done?'ตรวจแล้ว':'ยังไม่ตรวจ',c.done?(c.time+' น.'):'—',c.note||'—',pLen]);
+    });
+  });
+  const wsDet=XLSX.utils.aoa_to_sheet(detRows);
+  wsDet['!cols']=[{wch:12},{wch:10},{wch:18},{wch:10},{wch:8},{wch:6},{wch:8},{wch:28},{wch:12},{wch:12},{wch:35},{wch:10}];
+  XLSX.utils.book_append_sheet(wb,wsDet,'รายละเอียดจุดตรวจ');
+
+  const anoRows=[['วันที่','เวลาส่ง','ชื่อผู้ตรวจ','กะ','รอบ','ลำดับจุด','จุดตรวจ','เวลาตรวจ','รายละเอียดผิดปกติ','จำนวนรูป']];
+  reports.forEach(r=>{
+    CPS.forEach(cp=>{
+      const c=r.checks[cp.id]||{};
+      if(c.done&&c.note){
+        const pLen=Array.isArray(c.photos)?c.photos.length:(c.photos||0);
+        anoRows.push([r.date,r.time,r.name,r.shift,r.round,cp.id,cp.name,c.time+' น.',c.note,pLen]);
+      }
+    });
+  });
+  if(anoRows.length>1){
+    const wsAno=XLSX.utils.aoa_to_sheet(anoRows);
+    wsAno['!cols']=[{wch:12},{wch:10},{wch:18},{wch:8},{wch:6},{wch:8},{wch:28},{wch:12},{wch:40},{wch:10}];
+    XLSX.utils.book_append_sheet(wb,wsAno,'พบผิดปกติ');
+  }
+
+  const photoRows=[['วันที่','ชื่อผู้ตรวจ','กะ','รอบ','ลำดับจุด','จุดตรวจ','ลำดับรูป','ชื่อไฟล์']];
+  let hasPhoto=false;
+  reports.forEach(r=>{
+    CPS.forEach(cp=>{
+      const c=r.checks[cp.id]||{};
+      const photos=Array.isArray(c.photos)?c.photos:[];
+      photos.forEach((p,i)=>{
+        hasPhoto=true;
+        photoRows.push([r.date,r.name,r.shift,r.round,cp.id,cp.name,i+1,p.name||`รูป_${cp.id}_${i+1}.jpg`]);
+      });
+    });
+  });
+  if(hasPhoto){
+    const wsP=XLSX.utils.aoa_to_sheet(photoRows);
+    wsP['!cols']=[{wch:12},{wch:18},{wch:8},{wch:6},{wch:8},{wch:28},{wch:10},{wch:25}];
+    XLSX.utils.book_append_sheet(wb,wsP,'ข้อมูลรูปภาพ');
+  }
+  XLSX.writeFile(wb, filename.replace(/[\/\\:*?"<>|]/g,'_')+'.xlsx');
+  if(hasPhoto) await exportPhotoHtml(reports, filename);
+  showToast('Export Excel สำเร็จ','ok');
+}
+
+async function exportPhotoHtml(reports, filename){
+  let sections='';
+  reports.forEach(rpt=>{
+    CPS.forEach(cp=>{
+      const c=rpt.checks[cp.id]||{};
+      const photos=Array.isArray(c.photos)?c.photos:[];
+      if(!c.done||!photos.length) return;
+      sections+=`
+        <div style="margin-bottom:20px;padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <span style="background:#EAF3DE;color:#27500A;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600">จุด ${cp.id}</span>
+            <span style="font-size:14px;font-weight:500">${cp.name}</span>
+            <span style="font-size:12px;color:#6b7280;margin-left:auto">⏰ ${c.time} น.</span>
+          </div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:6px">${rpt.name} · ${rpt.shift} รอบ ${rpt.round} · ${rpt.date}</div>
+          ${c.note?`<div style="font-size:12px;color:#633806;margin-bottom:8px;padding:6px 10px;background:#FEF3C7;border-radius:6px">⚠️ ${c.note}</div>`:''}
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${photos.map((p,i)=>`<div style="text-align:center"><img src="${p.dataUrl}" style="width:160px;height:160px;object-fit:cover;border-radius:8px;border:1px solid #ddd;display:block"/><div style="font-size:10px;color:#999;margin-top:2px">รูป ${i+1}</div></div>`).join('')}
+          </div>
+        </div>`;
+    });
+  });
+  if(!sections) return;
+  const html=`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"/><title>รูปภาพรายงาน</title>
+  <style>body{font-family:-apple-system,sans-serif;background:#f3f4f6;padding:20px}h1{font-size:18px;margin-bottom:4px}p{font-size:12px;color:#6b7280;margin-bottom:16px}</style>
+  </head><body><div style="max-width:900px;margin:0 auto">
+  <div style="background:#0C447C;color:#E6F1FB;border-radius:12px;padding:16px 20px;margin-bottom:16px">
+    <h1>📷 รายงานรูปภาพตรวจจุด รปภ.</h1>
+    <p style="color:#bcd5f0">สร้างเมื่อ ${new Date().toLocaleString('th-TH')}</p>
+  </div>
+  ${sections}</div></body></html>`;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url;
+  a.download=filename+'_รูปภาพ.html'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ============================================================
+   CLEAR DATA
+   ============================================================ */
+function clearAllData(){ document.getElementById('modal-clear').classList.add('show'); }
+function confirmClear(){
+  localStorage.removeItem(LS_KEY);
+  document.getElementById('modal-clear').classList.remove('show');
+  renderAdminDash();
+  showToast('ลบข้อมูลทั้งหมดแล้ว','ok');
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+function openLb(src){
+  document.getElementById('lb-img').src=src;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLb(){
+  document.getElementById('lightbox').classList.remove('show');
+  document.getElementById('lb-img').src='';
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg, type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast toast-'+(type==='err'?'err':type==='info'?'info':'ok')+' show';
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetAll(){
+  checks={}; tempPhotos={}; lastReport=null;
+  G={name:'',id:'',shift:'day',round:null};
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-id').value='';
+  pickShift('day');
+  show('s-login');
+}
+</script>
+
+<!-- ══════════════════════════════════════
+     GOOGLE APPS SCRIPT — วางใน Apps Script
+     ไฟล์ gas_script.js (คัดลอกโค้ดด้านล่าง)
+══════════════════════════════════════
+/*
+// ======== gas_script.js ========
+// วางโค้ดนี้ทั้งหมดใน Google Apps Script
+// Extensions > Apps Script > วางแล้ว Deploy
+
+const SHEET_NAME = 'รายงาน';
+const SHEET_DETAIL = 'รายละเอียด';
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    
+    // Sheet 1: สรุปรายงาน
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow(['วันที่','เวลา','ชื่อผู้ตรวจ','รหัส','กะ','รอบ','ช่วงเวลา','ตรวจแล้ว','ยังไม่ตรวจ','พบผิดปกติ']);
+    }
+    sheet.appendRow([
+      data.date, data.time, data.name, data.empId,
+      data.shift, data.round, data.roundTime,
+      data.summary.done, data.summary.total - data.summary.done, data.summary.alerts
+    ]);
+    
+    // Sheet 2: รายละเอียดจุดตรวจ
+    let det = ss.getSheetByName(SHEET_DETAIL);
+    if (!det) {
+      det = ss.insertSheet(SHEET_DETAIL);
+      det.appendRow(['วันที่','เวลา','ชื่อผู้ตรวจ','กะ','รอบ','จุดที่','ชื่อจุด','สถานะ','เวลาตรวจ','หมายเหตุ','จำนวนรูป']);
+    }
+    const checkpoints = [
+      {id:1,name:'จุดแท็งก์น้ำบาดาล'},{id:2,name:'จุดโรงจอดรถ'},
+      {id:3,name:'จุดข้างบรรจุมิกเซอร์'},{id:4,name:'จุดเครื่องนึ่ง'},
+      {id:5,name:'จุดปากถัง'},{id:6,name:'จุดโกดัง'},
+      {id:7,name:'จุดห้องควบคุมทรัคดรั้มพ์'},{id:8,name:'จุดไซโล 1'},
+      {id:9,name:'จุดไซโล 2'},{id:10,name:'โรงขยะ'},
+      {id:11,name:'จุดช็อปรับเหมา'},{id:12,name:'จุดถังไซโล'},
+      {id:13,name:'จุดปั้มน้ำดับเพลิง'},{id:14,name:'จุดหอพักเก่า'},
+      {id:15,name:'จุดหอพักใหม่'},{id:16,name:'จุดโรงอาหาร'},
+      {id:17,name:'จุดข้างศูนย์เรียนรู้ TPM'},{id:18,name:'จุดสำนักงาน'}
+    ];
+    checkpoints.forEach(cp => {
+      const c = data.checks[cp.id] || {};
+      det.appendRow([
+        data.date, data.time, data.name, data.shift, data.round,
+        cp.id, cp.name,
+        c.done ? 'ตรวจแล้ว' : 'ยังไม่ตรวจ',
+        c.done ? (c.time + ' น.') : '—',
+        c.note || '—',
+        c.photos || 0
+      ]);
+    });
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', msg: err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput('OK');
+}
+*/
+-->
+
+</body>
+</html>
+    
+  </body>
+  
+</html>
+    
+  </body>
+  
+</html>
